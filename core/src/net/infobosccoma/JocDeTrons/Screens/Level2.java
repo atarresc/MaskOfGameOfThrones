@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -14,8 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import net.infobosccoma.JocDeTrons.MapBodyManager;
+import net.infobosccoma.JocDeTrons.Mask_object;
 import net.infobosccoma.JocDeTrons.Personatge;
 import net.infobosccoma.JocDeTrons.TiledMapHelper;
+
+import java.util.ArrayList;
 
 /**
  * La pantalla que controla el nivell 1 del joc
@@ -34,6 +38,7 @@ public class Level2 extends AbstractScreen {
 
     // objecte que gestiona el protagonista del joc
     private Personatge personatge;
+    private Mask_object mask_object;
     /**
      * Objecte que conté tots els cossos del joc als quals els aplica la
      * simulació
@@ -61,35 +66,27 @@ public class Level2 extends AbstractScreen {
     /**
      * Per mostrar el títol
      */
-    private Label title;
     private Label score;
-    private Image lives;
-    private Texture lives_texture;
 
     private Table table = new Table();
 
     /**
      * per indicar quins cossos s'han de destruir
      */
-    //private ArrayList<Body> bodyDestroyList;
+    private ArrayList<Body> bodyDestroyList;
     //</editor-fold>
 
     //<editor-fold desc="Constructors">
-    public Level2(net.infobosccoma.JocDeTrons.JocDeTrons joc) {
+    public Level2(net.infobosccoma.JocDeTrons.JocDeTrons joc, int lives) {
         super(joc);
 
 
 
         //title = new Label(joc.getTitol(),joc.getSkin(), "groc");
         score = new Label("0123", joc.getSkin(), "scoreStyle");
-        title = new Label("0124", joc.getSkin(), "scoreStyle");
-        //lives = new Image();
-        lives_texture = new Texture(
-                Gdx.files.internal("imatges/cor_full.png"));
         // seleccionar Linear per millorar l'estirament
-        lives_texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        lives = new Image(lives_texture);
+
 		/*
 		 * Crear el mon on es desenvolupa el joc. S'indica la gravetat: negativa
 		 * perquè indica cap avall
@@ -101,11 +98,12 @@ public class Level2 extends AbstractScreen {
         carregarMusica();
 
         // --- si es volen destruir objectes, descomentar ---
-        //bodyDestroyList= new ArrayList<Body>();
+        bodyDestroyList= new ArrayList<Body>();
         //world.setContactListener(new GestorContactes(bodyDestroyList));
-        world.setContactListener(new net.infobosccoma.JocDeTrons.GestorContactes(joc,personatge));
-        // crear el personatge
         personatge = new Personatge(world);
+        personatge.setLives(lives);
+        mask_object = new Mask_object(world,35.1f, 8.0f);
+        world.setContactListener(new net.infobosccoma.JocDeTrons.GestorContactes(joc,personatge,bodyDestroyList));
         // objecte que permet debugar les col·lisions
         debugRenderer = new Box2DDebugRenderer();
 
@@ -221,6 +219,8 @@ public class Level2 extends AbstractScreen {
     //<editor-fold desc="Mètodes sobreescrits">
     @Override
     public void render(float delta) {
+        mask_object.moure();
+        mask_object.updatePosition();
         personatge.inicialitzarMoviments();
         tractarEventsEntrada();
         personatge.moure();
@@ -236,11 +236,12 @@ public class Level2 extends AbstractScreen {
 		/*
 		 * per destruir cossos marcats per ser eliminats
 		 */
-        /*	for(int i = bodyDestroyList.size()-1; i >=0; i-- ) {
+        for(int i = bodyDestroyList.size()-1; i >=0; i-- ) {
 		    	world.destroyBody(bodyDestroyList.get(i));
+            personatge.setMask(false);
 		}
 		bodyDestroyList.clear();
-        */
+
 
         // Esborrar la pantalla
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -256,13 +257,16 @@ public class Level2 extends AbstractScreen {
         // iniciar el lot
         batch.begin();
         personatge.dibuixar(batch);
+        if (personatge.isMask()) {
+            mask_object.dibuixar(batch);
+        }
         //joc.getSkin().getFont("scoreFont").draw(batch, "0123", 10, 10);
         // finalitzar el lot: a partir d'aquest moment es dibuixa tot el que
         // s'ha indicat entre begin i end
         batch.end();
 
         score.setText(Long.toString(personatge.getPunts()));
-        score.setText("VIDES: ");
+        score.setText("LIVES: ");
 
         calculRedimensionat();
 
@@ -291,7 +295,7 @@ public class Level2 extends AbstractScreen {
         table.add(score).pad(10);
         table.setFillParent(true);
         stage.addActor(table);
-        table.add(lives);
+        table.add(personatge.getImageLives());
     }
     //</editor-fold>
 }

@@ -46,12 +46,14 @@ public class Personatge {
     private int lives;
     private Image imageLives;
     private Texture lives_texture;
+    private boolean mask;
 
     private long punts;
     //</editor-fold>
 
     //<editor-fold desc="Constructors">
     public Personatge(World world) {
+        mask = true;
         imageLives = new Image();
         moureEsquerra = moureDreta = ferSalt = false;
         this.world = world;
@@ -70,6 +72,14 @@ public class Personatge {
 
     public int getLives() {
         return lives;
+    }
+
+    public boolean isMask() {
+        return mask;
+    }
+
+    public void setMask(boolean mask) {
+        this.mask = mask;
     }
 
     public void setLives(int lives) {
@@ -164,11 +174,11 @@ public class Personatge {
 
     /**
      * Fer que el personatge es mogui
-     * <p/>
+     * <p>
      * Canvia la posició del protagonista
      * Es tracta de forma separada el salt perquè es vol que es pugui moure si salta
      * al mateix temps..
-     * <p/>
+     * <p>
      * Els impulsos s'apliquen des del centre del protagonista
      */
     public void moure() {
