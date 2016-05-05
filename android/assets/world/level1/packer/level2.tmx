@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="300" height="20" tilewidth="16" tileheight="16" nextobjectid="106">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="300" height="20" tilewidth="16" tileheight="16" nextobjectid="107">
  <tileset firstgid="1" name="generic_platformer_tiles" tilewidth="16" tileheight="16" tilecount="3072" columns="64">
   <image source="generic_platformer_tiles.png" width="1024" height="768"/>
  </tileset>
@@ -381,13 +381,13 @@
     <property name="material" value="ground"/>
    </properties>
   </object>
-  <object id="30" name="aigua2" type="fixture" x="4475" y="229.5" width="22" height="25">
+  <object id="30" name="aigua2" type="fixture" x="4474" y="232.5" width="22" height="25">
    <properties>
     <property name="body" value="environment"/>
     <property name="material" value="ground"/>
    </properties>
   </object>
-  <object id="31" name="aigua2" type="fixture" x="4282" y="146.5" width="22" height="25">
+  <object id="31" name="aigua2" type="fixture" x="4281" y="150.5" width="22" height="25">
    <properties>
     <property name="body" value="environment"/>
     <property name="material" value="ground"/>
@@ -673,7 +673,7 @@
     <property name="material" value="ice"/>
    </properties>
   </object>
-  <object id="90" name="terra2" type="fixture" x="4607.9" y="179.5" width="35.1003" height="103.813">
+  <object id="90" name="terra2" type="fixture" x="4607.9" y="182.5" width="35.1003" height="100.813">
    <properties>
     <property name="body" value="environment"/>
     <property name="material" value="ice"/>
@@ -745,6 +745,13 @@
     <property name="material" value="ground"/>
    </properties>
    <polyline points="0,0 17.5,19 37.5,31 51.5,35.5 105,35.5 120,30.5 142.5,15 160.5,0 173,-9.5 177,-12 181.5,-14 187.5,-15.5 192.5,-15.5 199.5,-15 204.5,-13 212,-7 215,-4 239,17.5 252,25 266,32 276,35.5 327,35.5 335,33.5 352.5,25.5 375.5,9.5 391,-6 407.5,-18.5 414.5,-22.5 423,-25 429,-24"/>
+  </object>
+  <object id="106" name="terra1" type="fixture" x="4608.5" y="179.5">
+   <properties>
+    <property name="body" value="environment"/>
+    <property name="material" value="ground"/>
+   </properties>
+   <polyline points="0,0 36.5,0.5"/>
   </object>
  </objectgroup>
 </map>
